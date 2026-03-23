@@ -16,8 +16,14 @@ pub mod fundus {
     pub fn initialize(ctx: Context<InitializeCtx>)-> Result<()>{
         instructions::initialize(ctx)
     }
-
-    
-   
+    pub fn create_campaign(ctx:Context<CampaignCtx>,title:String,description:String,img_url:String,goal:u64)->Result<()>{
+        instructions::create_campaign(ctx, title, description, img_url, goal)
+    }   
+    pub fn update_campaign(ctx:Context<UpdateCampaignCtx>,cid:u64,title:String,description:String,img_url:String,goal:u64)->Result<()>{
+        instructions::update_campaign(ctx,cid, title, description, img_url, goal)
+    }   
+    pub fn delete_campaign(ctx:Context<DeleteCampaignCtx>,cid:u64)->Result<()>{
+        instructions::delete_campaign(ctx,cid)
+    }  
 }
 

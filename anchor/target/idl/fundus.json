@@ -1,5 +1,5 @@
 {
-  "address": "AWMHjJYpfc8iDrHRALDryZtw8X2FQubnwH5ztGnxSatu",
+  "address": "D1orwWBhT5KxkAouQs5YjWyY6Dvv5LDzrazCWuP68bWq",
   "metadata": {
     "name": "fundus",
     "version": "0.1.0",
@@ -8,28 +8,49 @@
   },
   "instructions": [
     {
-      "name": "set_greeting",
-      "docs": [
-        "Sets a greeting message in the account."
-      ],
+      "name": "create_campaign",
       "discriminator": [
-        63,
-        232,
-        53,
-        234,
-        129,
-        147,
-        78,
-        101
+        111,
+        131,
+        187,
+        98,
+        160,
+        193,
+        114,
+        244
       ],
       "accounts": [
         {
-          "name": "greeting_account",
+          "name": "campaign",
           "writable": true,
-          "signer": true
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  109,
+                  112,
+                  97,
+                  105,
+                  103,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "program_state.campaign_count",
+                "account": "ProgramState"
+              }
+            ]
+          }
         },
         {
-          "name": "user",
+          "name": "program_state"
+        },
+        {
+          "name": "creator",
           "writable": true,
           "signer": true
         },
@@ -40,36 +61,212 @@
       ],
       "args": [
         {
-          "name": "message",
+          "name": "title",
           "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "img_url",
+          "type": "string"
+        },
+        {
+          "name": "goal",
+          "type": "u64"
         }
       ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "program_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "deployer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
     {
-      "name": "GreetingAccount",
+      "name": "Campaign",
       "discriminator": [
-        190,
-        16,
-        56,
-        57,
-        246,
-        26,
-        112,
-        24
+        50,
+        40,
+        49,
+        11,
+        157,
+        220,
+        229,
+        192
       ]
+    },
+    {
+      "name": "ProgramState",
+      "discriminator": [
+        77,
+        209,
+        137,
+        229,
+        149,
+        67,
+        167,
+        230
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyInitiated",
+      "msg": "Program already initialized"
+    },
+    {
+      "code": 6001,
+      "name": "TitleTooLong",
+      "msg": "Title cannot be greater than 64 characters"
+    },
+    {
+      "code": 6002,
+      "name": "DescriptionTooLong",
+      "msg": "Description cannot be greater than 512 characters"
+    },
+    {
+      "code": 6003,
+      "name": "IMGUrlTooLong",
+      "msg": "Img Url cannot be greater than 512 characters"
+    },
+    {
+      "code": 6004,
+      "name": "TitleEmpty",
+      "msg": "Title cannot be Empty"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidGoalAmount",
+      "msg": "Invalid goal amount"
     }
   ],
   "types": [
     {
-      "name": "GreetingAccount",
+      "name": "Campaign",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "message",
+            "name": "cid",
+            "type": "u64"
+          },
+          {
+            "name": "title",
             "type": "string"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "img_url",
+            "type": "string"
+          },
+          {
+            "name": "goal",
+            "type": "u64"
+          },
+          {
+            "name": "fund_raised",
+            "type": "u64"
+          },
+          {
+            "name": "donars",
+            "type": "u64"
+          },
+          {
+            "name": "withdrawals",
+            "type": "u64"
+          },
+          {
+            "name": "balance",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "initialized",
+            "type": "bool"
+          },
+          {
+            "name": "campaign_count",
+            "type": "u64"
+          },
+          {
+            "name": "platform_fee",
+            "type": "u64"
+          },
+          {
+            "name": "platform_address",
+            "type": "pubkey"
           }
         ]
       }
