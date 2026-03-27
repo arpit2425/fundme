@@ -25,5 +25,8 @@ pub mod fundus {
     pub fn delete_campaign(ctx:Context<DeleteCampaignCtx>,cid:u64)->Result<()>{
         instructions::delete_campaign(ctx,cid)
     }  
+    pub fn donate(ctx:Context<Donate>,cid:u64,amount:u64)->Result<()>{
+        instructions::donate(ctx, cid, amount)
+    }
 }
 

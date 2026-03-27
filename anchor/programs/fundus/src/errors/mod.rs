@@ -17,5 +17,15 @@ pub enum ErrorCode {
     #[msg("Person is unauthorized")]
     UnAuthorized,
     #[msg("Campaign is not active")]
-    NotActiveCampaign
+    NotActiveCampaign,
+    #[msg("Campaign goal acheived")]
+    CampaignGoalAcheived,
+    #[msg("Invalid Donation amount min 1 sol")]
+    InvalidDonationAmount,
+    #[msg("Unauthorized to withdraw from this campaign")]
+    UnAuthorizedTransaction,
+    #[msg("Insufficient funds to withdraw")]
+    InsufficientFunds,
+    #[msg("Invalid platform address")]
+    InvalidPlatformAddress
 }
