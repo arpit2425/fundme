@@ -1,5 +1,5 @@
 use anchor_lang::{prelude::*, solana_program::{native_token::LAMPORTS_PER_SOL, program, system_instruction}, system_program::Transfer};
-use crate::{constants::ANCHOR_DISCRIMINATOR_SIZE, errors::ErrorCode, states::{Campaign, ProgramState, Transaction}};
+use crate::{constants::ANCHOR_DISCRIMINATOR_SIZE, errors::ErrorCode, instructions::donate, states::{Campaign, ProgramState, Transaction}};
 pub fn withdraw(ctx:Context<WithdrawCtx>,cid:u64,amount:u64)->Result<()>{
     let campaign=&mut ctx.accounts.campaign;
     let transaction=&mut ctx.accounts.transaction;
@@ -25,21 +25,23 @@ pub fn withdraw(ctx:Context<WithdrawCtx>,cid:u64,amount:u64)->Result<()>{
 
     } 
     let rent_amount=Rent::get()?.minimum_balance(campaign.to_account_info().data_len());
-   let trx=system_instruction::transfer(&creater.key(), &campaign.key(), amount);
-   let result= program::invoke(&trx, &[
-        creater.to_account_info(),campaign.to_account_info()
-    ]);
-    if let Err(e) = result{
-        msg!("Donation failed {:?}",e);
-        return Err(e.into());
+    if amount> **campaign.to_account_info().lamports.borrow()-rent_amount{
+        return Err(ErrorCode::InsufficientFunds.into())
     }
-    campaign.balance+=amount;
-    campaign.fund_raised+=amount;
-    campaign.donars+=1;
+    let platform_amount=amount * program_state.platform_fee/100;
+    let creator_bal=amount-platform_amount;
+    **campaign.to_account_info().try_borrow_mut_lamports()?-=creator_bal;
+    **creater.to_account_info().try_borrow_mut_lamports()?+=creator_bal;
+    **campaign.to_account_info().try_borrow_mut_lamports()?-=platform_amount;
+    **platform_address.to_account_info().try_borrow_mut_lamports()?+=platform_amount;
+    campaign.balance-=amount;
+   
+    campaign.withdrawals+=1;
     transaction.cid=cid;
     transaction.amount=amount;
     transaction.timestamp=Clock::get()?.unix_timestamp as u64;
     transaction.owner=creater.key();
+    transaction.donated=false;
  
     Ok(())
 }
@@ -64,7 +66,7 @@ pub struct WithdrawCtx<'info>{
     pub donar:Signer<'info>,
     #[account(mut)]
     pub program_state:Account<'info,ProgramState>,
-    ///Check:
+    /// CHECK:
     #[account(mut)]
     pub platform_address:AccountInfo<'info>,
     pub system_program:Program<'info,System>

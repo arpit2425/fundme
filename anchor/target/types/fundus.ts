@@ -321,6 +321,132 @@ export type Fundus = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "updatePlatformSettings",
+      "discriminator": [
+        213,
+        238,
+        2,
+        39,
+        128,
+        157,
+        3,
+        95
+      ],
+      "accounts": [
+        {
+          "name": "programState",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "updater",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "platformFee",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "campaign",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  109,
+                  112,
+                  97,
+                  105,
+                  103,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "cid"
+              }
+            ]
+          }
+        },
+        {
+          "name": "transaction",
+          "writable": true
+        },
+        {
+          "name": "donar",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "programState",
+          "writable": true
+        },
+        {
+          "name": "platformAddress",
+          "writable": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "cid",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -414,6 +540,26 @@ export type Fundus = {
       "code": 6009,
       "name": "invalidDonationAmount",
       "msg": "Invalid Donation amount min 1 sol"
+    },
+    {
+      "code": 6010,
+      "name": "unAuthorizedTransaction",
+      "msg": "Unauthorized to withdraw from this campaign"
+    },
+    {
+      "code": 6011,
+      "name": "insufficientFunds",
+      "msg": "Insufficient funds to withdraw"
+    },
+    {
+      "code": 6012,
+      "name": "invalidPlatformAddress",
+      "msg": "Invalid platform address"
+    },
+    {
+      "code": 6013,
+      "name": "invalidPlatformFee",
+      "msg": "Invalid platform fee"
     }
   ],
   "types": [

@@ -32,6 +32,7 @@ pub fn donate(ctx:Context<Donate>,cid:u64,amount:u64)->Result<()>{
     transaction.amount=amount;
     transaction.timestamp=Clock::get()?.unix_timestamp as u64;
     transaction.owner=creater.key();
+    transaction.donated=true;
  
     Ok(())
 }

@@ -27,5 +27,7 @@ pub enum ErrorCode {
     #[msg("Insufficient funds to withdraw")]
     InsufficientFunds,
     #[msg("Invalid platform address")]
-    InvalidPlatformAddress
+    InvalidPlatformAddress,
+    #[msg("Invalid platform fee")]
+    InvalidPlatformFee
 }
