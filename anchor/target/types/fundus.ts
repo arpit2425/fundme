@@ -53,7 +53,8 @@ export type Fundus = {
           }
         },
         {
-          "name": "programState"
+          "name": "programState",
+          "writable": true
         },
         {
           "name": "creator",

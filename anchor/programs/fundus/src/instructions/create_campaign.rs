@@ -19,10 +19,10 @@ pub fn create_campaign(ctx:Context<CampaignCtx>,title:String,description:String,
     if goal<LAMPORTS_PER_SOL {
         return Err(ErrorCode::InvalidGoalAmount.into())
     }
-    campaign.title=title;
-    campaign.description=description;
-    campaign.img_url=img_url;
-    campaign.goal=goal;
+campaign.title=title;
+campaign.description=description;
+campaign.img_url=img_url;
+campaign.goal=goal;
     campaign.balance=0;
     campaign.fund_raised=0;
     campaign.donars=0;
@@ -46,7 +46,7 @@ pub struct CampaignCtx<'info>{
         bump
     )]
     pub campaign:Account<'info,Campaign>,
-
+    #[account(mut)]
     pub program_state:Account<'info,ProgramState>,
     #[account(mut)]
     pub creator:Signer<'info>,
