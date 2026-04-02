@@ -9,11 +9,18 @@ body {
 }
 
 .wallet-adapter-button-trigger {
-    background: rgb#16a34a !important;
+    background-color: #16a34a !important;
+    color: #ffffff !important;
     border-radius: 8px !important;
     padding-left: 16px !important;
     padding-right: 16px !important;
 }
+
+.wallet-adapter-button-trigger:not([disabled]):hover {
+    background-color: #15803d !important;
+    color: #ffffff !important;
+}
+
 .wallet-adapter-dropdown-list,
 .wallet-adapter-button {
     font-family: inherit !important;

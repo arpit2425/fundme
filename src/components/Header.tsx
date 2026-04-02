@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FaUserCircle, FaPlusCircle, FaBars, FaTimes } from 'react-icons/fa'
-
+import {WalletMultiButton} from "@solana/wallet-adapter-react-ui"
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
@@ -39,9 +39,7 @@ export default function Header() {
         {isMounted && (
           <div className="hidden md:inline-block">
             {/* Static Wallet Button */}
-            <button className="bg-green-600 text-white py-2 px-4 rounded-lg">
-              Connect Wallet
-            </button>
+            <WalletMultiButton />
           </div>
         )}
 
@@ -77,9 +75,10 @@ export default function Header() {
               <span>Create</span>
             </Link>
             {isMounted && (
-              <button className="bg-green-600 text-white py-2 px-4 rounded-lg">
-                Connect Wallet
-              </button>
+              // <button className="bg-green-600 text-white py-2 px-4 rounded-lg">
+              //   Connect Wallet
+              // </button>
+              <WalletMultiButton />
             )}
           </div>
         </nav>
