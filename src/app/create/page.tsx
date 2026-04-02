@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function Page() {
   // Local form state
@@ -13,8 +14,23 @@ export default function Page() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('Form Submitted:', form)
-    alert('Campaign created successfully!')
+    toast.promise(
+      new Promise<void>( async (resolve,reject)=>{
+        try {
+          setTimeout(()=>{
+            console.log(form)
+            resolve()
+          },3000)
+        } catch (error) {
+          reject()
+        }
+      }),
+      {
+        success:"Campaign Created",
+        pending:"Creating Campaign",
+        error:"Failed"
+      }
+    )
   }
 
   return (
