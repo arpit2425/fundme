@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import { toast } from 'react-toastify'
+import {useWallet} from "@solana/wallet-adapter-react"
 
 export default function Page() {
   // Local form state
+  const {sendTransaction,publicKey,signTransaction}=useWallet();
   const [form, setForm] = useState({
     title: '',
     description: '',
