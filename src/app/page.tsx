@@ -3,10 +3,17 @@
 import CampaignCard from '@/components/CampaignCard'
 import CampaignHero from '@/components/CampaignHero'
 import { campaigns as dummyCampaign } from '../data'
+import { Campaign } from '@/utils/interfaces'
+import { useEffect, useMemo, useState } from 'react'
+import { fetchAllActiveCampaigns, getProviderReadOnly } from '@/services/blockchain'
 
 export default function Page() {
   // Use the dummy data directly
-  const campaigns = dummyCampaign
+  const [campaigns,setCampaigns]=useState<Campaign[]>([])
+  const program =useMemo(()=>getProviderReadOnly(),[])
+  useEffect(()=> {fetchAllActiveCampaigns(program).then(data=>setCampaigns(data))
+   } ,[program])
+  // const campaigns = dummyCampaign
 
   return (
     <div className="container mx-auto p-6">

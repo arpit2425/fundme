@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 import CampaignDetails from '@/components/CampaignDetails'
 import CampaignDonate from '@/components/CampaignDonate'
@@ -10,12 +10,27 @@ import Image from 'next/image'
 import WithdrawModal from '@/components/WithdrawModal'
 import DeleteModal from '@/components/DeleteModal'
 import { campaigns, dummyTransactions } from '@/data'
+import { fetchCampaignDetails, getProviderReadOnly } from '@/services/blockchain'
+import { Campaign } from '@/utils/interfaces'
 
 export default function CampaignPage() {
   const { cid } = useParams()
+  console.log("cid",cid)
+  const program =useMemo(()=>getProviderReadOnly(),[])
+  const [campaign,setCampaign]=useState<Campaign | null>(null)
+  useEffect(()=> {
+    if(cid){
+      const fetchedDetail=async()=>{
+       const data=await fetchCampaignDetails(program!,cid as string)
+       setCampaign(data)
+      }
+      fetchedDetail()
+    }
+  } ,[program,cid])
+
 
   // Find the campaign by `cid`
-  const campaign = campaigns.find((c) => c.publicKey === cid)
+  // const campaign = campaigns.find((c) => c.publicKey === cid)
 
   // Filter transactions based on the `cid`
   const donations = dummyTransactions.filter(
@@ -56,8 +71,8 @@ export default function CampaignPage() {
       </div>
       <DonationsList donations={donations} />
       <WithdrawalList withdrawals={withdrawals} />
-      <WithdrawModal campaign={campaign} pda={cid as string} />
-      <DeleteModal campaign={campaign} pda={cid as string} />
+      {/* <WithdrawModal campaign={campaign} pda={cid as string} />
+      <DeleteModal campaign={campaign} pda={cid as string} /> */}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { truncateAddress } from '@/utils/helper'
 import { Transaction } from '@/utils/interfaces'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import Link from 'next/link'
 import React from 'react'
 import { FaMoneyBillWave } from 'react-icons/fa'
@@ -32,7 +33,7 @@ const DonationsList: React.FC<{ donations: Transaction[] }> = ({
                   </Link>
                 </strong>{' '}
                 <small className="text-green-500">
-                  {donation.amount.toLocaleString()} SOL
+                  {donation.amount/LAMPORTS_PER_SOL} SOL
                 </small>
               </p>
 

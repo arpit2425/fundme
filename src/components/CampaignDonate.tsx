@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from 'react'
 import Link from 'next/link'
 import { FaDollarSign, FaDonate, FaEdit, FaTrashAlt } from 'react-icons/fa'
 import { Campaign } from '@/utils/interfaces'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 
 const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
   campaign,
@@ -39,7 +40,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
             type="text"
             name="donationAmount"
             placeholder={`1 SOL (${(
-              campaign.goal - campaign.amountRaised
+              campaign.goal/LAMPORTS_PER_SOL - campaign.amountRaised/LAMPORTS_PER_SOL
             ).toFixed(2)} SOL remaining)`}
             value={amount}
             onChange={(e) => {
