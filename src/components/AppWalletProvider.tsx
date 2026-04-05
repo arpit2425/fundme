@@ -12,7 +12,7 @@ export default function AppWalletProvider({children}:{children:React.ReactNode})
     const wallets=useMemo(()=>[new PhantomWalletAdapter()],[network]);
     return (
         <ConnectionProvider endpoint={endpoint}>
-            <WalletProvider wallets={wallets}>
+            <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>{children}</WalletModalProvider>
             </WalletProvider>
 

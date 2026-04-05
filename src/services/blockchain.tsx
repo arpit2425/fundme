@@ -4,11 +4,15 @@ import { Fundus } from "anchor/target/types/fundus";
 import idl from "anchor/target/idl/fundus.json";
 import { BN } from "bn.js";
 import { toast } from "react-toastify";
-import { Campaign } from "@/utils/interfaces";
+import { Campaign, Transaction } from "@/utils/interfaces";
 import { program } from "@coral-xyz/anchor/dist/cjs/native/system";
+import { store } from "@/store";
+import { globalAction } from "@/store/globalSlices";
+
 
 
 let tx:any;
+const {setCampaign, setDonations,setWithdrawals}=globalAction
 const getClusterUrl=(cluster:string)=>{
     const clusterUrls: any = {
         'mainnet-beta': 'https://api.mainnet-beta.solana.com',
@@ -104,12 +108,12 @@ const serializeCampaignData=(campaigns:any)=>{
             publicKey: c.publicKey.toBase58(),
             cid: c.account.cid.toNumber(),
             creator: c.account.creator.toBase58(),
-            goal: c.account.goal.toNumber(),
-            amountRaised: c.account.fundRaised.toNumber(),
+            goal: c.account.goal.toNumber()/LAMPORTS_PER_SOL,
+            amountRaised: c.account.fundRaised.toNumber()/LAMPORTS_PER_SOL,
             timestamp: c.account.timestamp.toNumber(),
             donars: c.account.donars.toNumber(),
             withdrawers: c.account.withdrawals.toNumber(),
-            balance: c.account.balance.toNumber(),
+            balance: c.account.balance.toNumber()/LAMPORTS_PER_SOL,
         }
 
 
@@ -124,18 +128,96 @@ export const fetchCampaignDetails=async(program:Program<Fundus>,pda:string):Prom
     publicKey:pda,
     cid: campaign.cid.toNumber(),
     creator: campaign.creator.toBase58(),
-    goal: campaign.goal.toNumber(),
-    amountRaised: campaign.fundRaised.toNumber(),
+    goal: campaign.goal.toNumber()/LAMPORTS_PER_SOL,
+    amountRaised: campaign.fundRaised.toNumber()/LAMPORTS_PER_SOL,
     timestamp: campaign.timestamp.toNumber(),
     donors: campaign.donars.toNumber(),
     withdrawals: campaign.withdrawals.toNumber(),
-    balance: campaign.balance.toNumber(),
+    balance: campaign.balance.toNumber()/LAMPORTS_PER_SOL,
     title: campaign.title,
     description:campaign.description,
     imageUrl:campaign.imgUrl,
 
 }
+store.dispatch(setCampaign(serializedCamp));
 return serializedCamp;
 
+
+}
+export const donateToCampaign=async(program:Program<Fundus>,publicKey:PublicKey, pda:string,
+    amount:string,
+):Promise<TransactionSignature>=>{
+    console.log("program",program)
+    const [programStatePda] = await PublicKey.findProgramAddress(
+        [Buffer.from('program_state')],
+        program.programId
+)
+      const state = await program.account.programState.fetch(programStatePda)
+    console.log(`state ${JSON.stringify(state)}`)
+    const campaign=await program.account.campaign.fetch(pda);
+    const [contributionPda] = await PublicKey.findProgramAddress(
+        [
+          Buffer.from('donar'),
+          publicKey.toBuffer(), 
+          campaign.cid.toArrayLike(Buffer, 'le', 8),
+          campaign.donars.add(new BN(1)).toArrayLike(Buffer, 'le', 8),
+        ],
+        program.programId
+      )
+    const amountBn = new BN(Math.round(+amount * LAMPORTS_PER_SOL));
+
+    const tx = await program.methods
+      .donate(campaign.cid, amountBn)
+      .accountsPartial({
+        transaction:contributionPda,
+        campaign:pda,
+        donar:publicKey,
+        systemProgram:SystemProgram.programId
+    }).rpc();
+    const connection=new Connection(
+        program.provider.connection.rpcEndpoint,
+        "confirmed"
+    );
+    await connection.confirmTransaction(tx,"finalized");
+    return tx;
+}
+
+export const fetchAllDonations=async(program:Program<Fundus>, pda:string)=>{
+        const campaign=await program.account.campaign.fetch(pda);
+        const transactions=await program.account.transaction.all();
+        console.log("transactions",transactions)
+        const donations=transactions.filter(tx=>tx.account.cid.eq(campaign.cid) && tx.account.donated);
+        console.log("donations",donations)
+        const serialDona=serializeDonationData(donations);
+        store.dispatch(setDonations(serialDona));
+        return serialDona;
+
+}
+export const fetchAllWithdrawals=async(program:Program<Fundus>,pda:string)=>{
+    const campaign=await program.account.campaign.fetch(pda);
+    const transactions=await program.account.transaction.all();
+    console.log("transactions",transactions)
+    const donations=transactions.filter(tx=>tx.account.cid.eq(campaign.cid) && !tx.account.donated);
+    console.log("donations",donations)
+    const serialDona=serializeDonationData(donations);
+    store.dispatch(setWithdrawals(serialDona));
+    return serialDona;
+}
+
+
+const serializeDonationData=(tx:any)=>{
+    console.log(tx);
+    const serializedDonation:Transaction[]=tx.map((c:any)=>  {
+        return {
+            // ...c.account,
+            publicKey: c.publicKey.toBase58(),
+            cid: c.account.cid.toNumber(),
+            owner: c.account.owner.toBase58(),
+            amount: c.account.amount.toNumber()/LAMPORTS_PER_SOL,
+            timestamp: c.account.timestamp.toNumber(),
+            credited: c.account.donated,
+        }
+    });
+    return serializedDonation;
 
 }

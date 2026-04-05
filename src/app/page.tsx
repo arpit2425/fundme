@@ -3,9 +3,10 @@
 import CampaignCard from '@/components/CampaignCard'
 import CampaignHero from '@/components/CampaignHero'
 import { campaigns as dummyCampaign } from '../data'
-import { Campaign } from '@/utils/interfaces'
+import { Campaign, RootState } from '@/utils/interfaces'
 import { useEffect, useMemo, useState } from 'react'
 import { fetchAllActiveCampaigns, getProviderReadOnly } from '@/services/blockchain'
+import { useSelector } from 'react-redux'
 
 export default function Page() {
   // Use the dummy data directly
@@ -13,6 +14,7 @@ export default function Page() {
   const program =useMemo(()=>getProviderReadOnly(),[])
   useEffect(()=> {fetchAllActiveCampaigns(program).then(data=>setCampaigns(data))
    } ,[program])
+  
   // const campaigns = dummyCampaign
 
   return (

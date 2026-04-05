@@ -1,6 +1,5 @@
 import { truncateAddress } from '@/utils/helper'
 import { Campaign } from '@/utils/interfaces'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import Link from 'next/link'
 import React from 'react'
 import { FaUserCircle, FaCoins, FaDollarSign, FaBell } from 'react-icons/fa'
@@ -38,7 +37,7 @@ const CampaignDetails: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
         </div>
         <p className="mt-2 text-gray-700">
           {campaign?.amountRaised.toLocaleString()} SOL raised of{' '}
-          {campaign?.goal/LAMPORTS_PER_SOL} SOL
+          {campaign?.goal} SOL
         </p>
       </div>
 

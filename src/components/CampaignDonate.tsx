@@ -1,14 +1,22 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { FaDollarSign, FaDonate, FaEdit, FaTrashAlt } from 'react-icons/fa'
 import { Campaign } from '@/utils/interfaces'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { toast } from 'react-toastify'
+import { donateToCampaign, fetchAllDonations, fetchCampaignDetails, getProvider } from '@/services/blockchain'
+import { useWallet } from '@solana/wallet-adapter-react'
 
 const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
   campaign,
   pda,
 }) => {
   const [amount, setAmount] = useState('')
+  const {sendTransaction,publicKey,signTransaction}=useWallet();
+  console.log("wallet", {sendTransaction,publicKey,signTransaction})
+  const program=useMemo(()=>{
+   return  getProvider(sendTransaction,publicKey,signTransaction)
+  },[sendTransaction,publicKey,signTransaction])
+
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -18,7 +26,28 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
     }
 
     console.log(`Donated ${amount} SOL to campaign ID: ${campaign.cid}`)
-    alert(`Donation successful! ${amount} SOL contributed.`)
+    toast.promise(
+      new Promise( async (resolve,reject)=>{
+        try {
+          console.log(e)
+          const tx=await donateToCampaign(program!,publicKey!,pda!,amount);
+          setAmount("")
+          await fetchCampaignDetails(program!,pda)
+          await fetchAllDonations(program!,pda);
+
+          console.log("transction",tx);
+          resolve(tx);
+        } catch (error) {
+          console.log("errorr",error)
+          reject()
+        }
+      }),
+      {
+        success:"Campaign Created",
+        pending:"Creating Campaign",
+        error:"Failed"
+      }
+    )
     setAmount('')
   }
 
@@ -40,7 +69,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
             type="text"
             name="donationAmount"
             placeholder={`1 SOL (${(
-              campaign.goal/LAMPORTS_PER_SOL - campaign.amountRaised/LAMPORTS_PER_SOL
+              campaign.goal - campaign.amountRaised
             ).toFixed(2)} SOL remaining)`}
             value={amount}
             onChange={(e) => {
