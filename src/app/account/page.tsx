@@ -1,16 +1,26 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { campaigns as dummyCampaigns, dummyProgramState } from '@/data'
 import CampaignCard from '@/components/CampaignCard'
 import AccountDetails from '@/components/AccountDetails'
-
+import {useWallet} from "@solana/wallet-adapter-react"
+import { fetchProgramState, fetchUserCampaigns, getProvider } from '@/services/blockchain'
+import { Campaign, GlobalState, ProgramState, RootState } from '@/utils/interfaces'
+import { useSelector } from 'react-redux'
 export default function Page() {
-  const publicKey = '0x1234567890abcdef' // Static publicKey for the demo
+ const {programState}=useSelector((states:RootState)=>states.globalStates)
+  const [campaigns,setCampaigns]=useState<Campaign[]>([])
 
-  // Use dummy data
-  const campaigns = dummyCampaigns
-  const programState = dummyProgramState
+
+  const {sendTransaction,signTransaction,publicKey}=useWallet();
+  const program=useMemo(()=>getProvider(sendTransaction,publicKey,signTransaction),[sendTransaction,publicKey,signTransaction])
+  useEffect(()=> {
+    if(program && publicKey){
+     fetchUserCampaigns(program!,publicKey!).then(data=>setCampaigns(data))
+     fetchProgramState(program!);
+    }
+  } ,[program,publicKey])
 
   return (
     <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -44,7 +54,7 @@ export default function Page() {
         )}
       </div>
 
-      {programState && programState.platformAddress === publicKey && (
+      {programState && programState.platformAddress === publicKey?.toBase58() && (
         <div className="md:col-span-1">
           <AccountDetails programState={programState} />
         </div>

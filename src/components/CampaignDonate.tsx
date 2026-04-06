@@ -102,7 +102,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
           </button>
         </form>
 
-        {campaign.creator === '0xCreatorAddress' && (
+        {publicKey && campaign.creator === publicKey.toBase58() && (
           <div className="mt-6 flex flex-wrap gap-2 md:flex-nowrap md:gap-0">
             <Link
               href={`/campaign/edit/${pda}`}

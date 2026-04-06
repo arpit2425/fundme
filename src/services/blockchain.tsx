@@ -4,7 +4,7 @@ import { Fundus } from "anchor/target/types/fundus";
 import idl from "anchor/target/idl/fundus.json";
 import { BN } from "bn.js";
 import { toast } from "react-toastify";
-import { Campaign, Transaction } from "@/utils/interfaces";
+import { Campaign, ProgramState, Transaction } from "@/utils/interfaces";
 import { program } from "@coral-xyz/anchor/dist/cjs/native/system";
 import { store } from "@/store";
 import { globalAction } from "@/store/globalSlices";
@@ -12,7 +12,7 @@ import { globalAction } from "@/store/globalSlices";
 
 
 let tx:any;
-const {setCampaign, setDonations,setWithdrawals}=globalAction
+const {setCampaign, setDonations,setWithdrawals,setProgramState}=globalAction
 const getClusterUrl=(cluster:string)=>{
     const clusterUrls: any = {
         'mainnet-beta': 'https://api.mainnet-beta.solana.com',
@@ -96,6 +96,14 @@ export const createCampaign=async(program:Program<Fundus>,publicKey:PublicKey, t
 export const fetchAllActiveCampaigns=async(program:Program<Fundus>):Promise<Campaign[]>=>{
     const campaigns=await program.account.campaign.all();
     const activeCamp=campaigns.filter(campaign=>campaign.account.active===true)
+    console.log("active campaigns",activeCamp)
+
+    return serializeCampaignData(activeCamp);
+
+}
+export const fetchUserCampaigns=async(program:Program<Fundus>,publicKey:PublicKey):Promise<Campaign[]>=>{
+    const campaigns=await program.account.campaign.all();
+    const activeCamp=campaigns.filter(campaign=>campaign.account.creator.toBase58()== publicKey.toBase58())
     console.log("active campaigns",activeCamp)
 
     return serializeCampaignData(activeCamp);
@@ -204,7 +212,24 @@ export const fetchAllWithdrawals=async(program:Program<Fundus>,pda:string)=>{
     return serialDona;
 }
 
+export const fetchProgramState=async(program:Program<Fundus>)=>{
+    const [programStatePda] = await PublicKey.findProgramAddress(
+        [Buffer.from('program_state')],
+        program.programId
+);
+const state = await program.account.programState.fetch(programStatePda)
+const serialized:ProgramState={
+    ...state,
+    campaignCount:state.campaignCount.toNumber(),
+    platformFee:state.platformFee.toNumber(),
+    platformAddress:state.platformAddress.toBase58()
+}
+console.log("program state",serialized)
+store.dispatch(setProgramState(serialized))
+return serialized;
 
+
+}
 const serializeDonationData=(tx:any)=>{
     console.log(tx);
     const serializedDonation:Transaction[]=tx.map((c:any)=>  {
