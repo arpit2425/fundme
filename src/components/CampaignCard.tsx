@@ -9,12 +9,13 @@ const CampaignCard: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
     (campaign.amountRaised / campaign.goal) * 100,
     100
   )
+  console.log("campaign card",campaign)
 
   return (
     <div className="max-w-sm bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300 group">
       <div className="overflow-hidden">
         <Image
-          src={campaign.imageUrl}
+          src={campaign.imgUrl}
           alt={`${campaign.title} campaign`}
           width={300}
           height={150}

@@ -32,6 +32,8 @@ async function main(cluster: string) {
       commitment: 'confirmed',
     }
   )
+  console.log("connection",connection);
+
 
   anchor.setProvider(provider)
 
@@ -63,8 +65,8 @@ async function main(cluster: string) {
 
 // Specify the cluster to target
 const cluster = process.env.NEXT_PUBLIC_CLUSTER || 'localhost'
+console.log(cluster)
 main(cluster).catch((err) => {
   console.error(err)
 })
 
-// console.log(cluster)
