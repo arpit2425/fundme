@@ -1,4 +1,5 @@
 import * as anchor from '@coral-xyz/anchor'
+import "dotenv/config"
 import idl from '../target/idl/fundus.json'
 import { Fundus } from '../target/types/fundus'
 import fs from 'fs'
@@ -61,7 +62,9 @@ async function main(cluster: string) {
 }
 
 // Specify the cluster to target
-const cluster = 'localhost'
+const cluster = process.env.NEXT_PUBLIC_CLUSTER || 'localhost'
 main(cluster).catch((err) => {
   console.error(err)
 })
+
+// console.log(cluster)
