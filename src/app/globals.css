@@ -2,23 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --bg-primary: #0a0a1a;
+    --bg-surface: #12122a;
+    --accent-start: #8b5cf6;
+    --accent-end: #06b6d4;
+}
+
 html,
 body {
     min-height: 100%;
-    background: white;
+    background: var(--bg-primary);
+    color: #f1f5f9;
+}
+
+::selection {
+    background: rgba(139, 92, 246, 0.3);
+    color: #f1f5f9;
+}
+
+@layer utilities {
+    .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .gradient-bar {
+        background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+    }
 }
 
 .wallet-adapter-button-trigger {
-    background-color: #16a34a !important;
+    background: linear-gradient(135deg, var(--accent-start), var(--accent-end)) !important;
     color: #ffffff !important;
-    border-radius: 8px !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    border-radius: 12px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
 }
 
 .wallet-adapter-button-trigger:not([disabled]):hover {
-    background-color: #15803d !important;
-    color: #ffffff !important;
+    opacity: 0.9 !important;
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3) !important;
+}
+
+.wallet-adapter-dropdown-list {
+    background: #12122a !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 12px !important;
+}
+
+.wallet-adapter-dropdown-list-item {
+    color: #f1f5f9 !important;
+}
+
+.wallet-adapter-dropdown-list-item:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
 }
 
 .wallet-adapter-dropdown-list,
@@ -28,4 +76,5 @@ body {
 
 input, textarea {
     background-color: transparent;
+    color: #f1f5f9;
 }

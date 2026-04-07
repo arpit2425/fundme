@@ -56,15 +56,15 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
 
   return (
     <div>
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <FaDonate className="text-green-600" />
+      <div className="glass rounded-2xl p-6">
+        <h2 className="text-xl font-bold text-slate-100 mb-4 flex items-center gap-2">
+          <FaDonate className="text-violet-400" />
           Donate
         </h2>
         <form onSubmit={handleSubmit}>
           <label
             htmlFor="donationAmount"
-            className="block text-gray-700 font-semibold mb-2"
+            className="block text-slate-300 font-semibold mb-2"
           >
             Amount (SOL)
           </label>
@@ -81,7 +81,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
                 setAmount(value)
               }
             }}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors duration-200"
             min="1"
             required
           />
@@ -92,13 +92,13 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
               !campaign.active ||
               campaign.amountRaised >= campaign.goal
             }
-            className={`mt-4 w-full bg-green-600 hover:bg-green-700 ${
+            className={`mt-4 w-full bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-400 hover:to-cyan-400 ${
               !amount ||
               !campaign.active ||
               campaign.amountRaised >= campaign.goal
                 ? 'opacity-50 cursor-not-allowed'
                 : ''
-            } text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2`}
+            } text-white font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300`}
           >
             <FaDonate />
             Donate Now
@@ -109,17 +109,17 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
           <div className="mt-6 flex flex-wrap gap-2 md:flex-nowrap md:gap-0">
             <Link
               href={`/campaign/edit/${pda}`}
-              className="bg-transparent hover:bg-green-600 text-green-600 hover:text-white
-              font-semibold py-2 px-4 flex-1 md:rounded-l-lg flex items-center justify-center
-              border border-green-600 hover:border-transparent"
+              className="bg-transparent hover:bg-violet-500 text-violet-400 hover:text-white
+              font-semibold py-2.5 px-4 flex-1 md:rounded-l-xl flex items-center justify-center
+              border border-violet-500/50 hover:border-transparent transition-all duration-300"
             >
               <FaEdit />
               Edit
             </Link>
             <button
               type="button"
-              className="bg-green-600 hover:bg-green-700 text-white
-              font-semibold py-2 px-4 flex-1 flex items-center justify-center"
+              className="bg-red-500/80 hover:bg-red-500 text-white
+              font-semibold py-2.5 px-4 flex-1 flex items-center justify-center transition-all duration-300"
               onClick={()=>dispatch(setDelModal('scale-100'))}
             >
               <FaTrashAlt />
@@ -127,9 +127,9 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
             </button>
 
             <button
-              className="bg-transparent hover:bg-green-600 text-green-600 hover:text-white
-              font-semibold py-2 px-4 flex-1 md:rounded-r-lg flex items-center justify-center
-              border border-green-600 hover:border-transparent"
+              className="bg-transparent hover:bg-violet-500 text-violet-400 hover:text-white
+              font-semibold py-2.5 px-4 flex-1 md:rounded-r-xl flex items-center justify-center
+              border border-violet-500/50 hover:border-transparent transition-all duration-300"
               onClick={()=>dispatch(setwithdrawModal('scale-100'))}
             >
               <FaDollarSign />

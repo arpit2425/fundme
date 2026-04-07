@@ -21,12 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-white">
+      <body className="bg-[#0a0a1a] text-slate-100 antialiased">
         <ReactQueryProvider>
           <Provider store={store}>
           <AppWalletProvider>
           <Header />
-          <main className="max-w-6xl mx-auto min-h-screen bg-white">
+          <main className="max-w-7xl mx-auto min-h-screen px-4">
             <div className=" h-24" />
             {children}
             <div className=" h-24" />

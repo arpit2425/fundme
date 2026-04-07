@@ -46,7 +46,7 @@ export default function CampaignPage() {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="bg-gray-100 pb-10">
+      <div className="bg-white/[0.02] rounded-2xl pb-10 border border-white/[0.06] overflow-hidden">
         {/* Hero Section */}
         <div className="relative">
           <Image
@@ -56,8 +56,8 @@ export default function CampaignPage() {
             height={1080} // Adjust this to match your image dimensions
             className="w-full h-64 object-cover"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white text-center">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1a] via-[#0a0a1a]/60 to-transparent flex items-center justify-center">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center tracking-tight drop-shadow-lg">
               {campaign.title}
             </h1>
           </div>

@@ -16,7 +16,7 @@ export default function Page() {
   // Static data: Find the campaign using `cid`
   const {sendTransaction,signTransaction,publicKey}=useWallet();
   const program=useMemo(()=>getProvider(sendTransaction,publicKey,signTransaction),[sendTransaction,publicKey,signTransaction])
- 
+
   const {campaign}=useSelector((state:RootState)=>state.globalStates)
   useEffect(()=> {
     if(cid){
@@ -79,15 +79,15 @@ export default function Page() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Update Campaign</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <h1 className="text-3xl font-bold mb-8 text-slate-100">Update Campaign</h1>
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
         <input
           type="text"
           placeholder="What's the grand title?"
           maxLength={64}
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
-          className="w-full p-2 border rounded text-black"
+          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors duration-200"
           required
         />
         <input
@@ -96,7 +96,7 @@ export default function Page() {
           maxLength={256}
           value={form.image_url}
           onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-          className="w-full p-2 border rounded text-black"
+          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors duration-200"
           required
         />
         <input
@@ -109,7 +109,7 @@ export default function Page() {
               setForm({ ...form, goal: value })
             }
           }}
-          className="w-full p-2 border rounded text-black"
+          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors duration-200"
           required
         />
         <textarea
@@ -117,21 +117,21 @@ export default function Page() {
           maxLength={512}
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
-          className="w-full p-2 border rounded text-black"
+          className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors duration-200 min-h-[120px]"
           required
         />
 
         <div className="mt-4 space-x-4 flex justify-start items-center">
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg"
+            className="bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-400 hover:to-cyan-400 text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg shadow-violet-500/25 transition-all duration-300"
           >
             Update Now
           </button>
 
           <Link
             href={`/campaign/${cid}`}
-            className="bg-black hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg text-center"
+            className="bg-white/10 hover:bg-white/20 border border-white/10 text-slate-300 hover:text-white font-semibold py-2.5 px-6 rounded-xl text-center transition-all duration-300"
           >
             Back
           </Link>
