@@ -1,27 +1,65 @@
-import React, { useState } from 'react'
+import { fetchAllWithdrawals, fetchCampaignDetails, getProvider, withdrawFromCampaign } from '@/services/blockchain'
+import { globalAction } from '@/store/globalSlices'
+import { Campaign, RootState } from '@/utils/interfaces'
+import { useWallet } from '@solana/wallet-adapter-react'
+import React, { useMemo, useState } from 'react'
 import { FaTimes } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 const WithdrawModal = ({
   campaign,
+  pda
 }: {
-  campaign: { title: string; balance: number }
+  campaign: Campaign,
+  pda:string
 }) => {
   const [amount, setAmount] = useState('')
-  const withModal = 'scale-0'
+  const {setwithdrawModal}=globalAction
+  const dispatch=useDispatch()
+
+  const {withdrawModal}=useSelector((state:RootState)=>state.globalStates)
+  const {sendTransaction,publicKey,signTransaction}=useWallet();
+  const program=useMemo(()=>{
+   return  getProvider(sendTransaction,publicKey,signTransaction)
+  },[sendTransaction,publicKey,signTransaction])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!amount) return
-
+    if (!amount || !publicKey || !program) return
+   
+    toast.promise(
+      new Promise( async (resolve,reject)=>{
+        try {
+          console.log(e)
+          const tx=await withdrawFromCampaign(program!,publicKey!,pda!,amount);
+          setAmount('')
+          console.log("transction",tx);
+          await fetchCampaignDetails(program!,pda)
+          await fetchAllWithdrawals(program!,pda);
+          dispatch(setwithdrawModal('scale-0'));
+          resolve(tx);
+        } catch (error) {
+          console.log("errorr",error)
+          reject()
+        }
+      }),
+      {
+        success:"Campaign Created",
+        pending:"Creating Campaign",
+        error:"Failed"
+      }
+    )
     // Simulate a withdrawal (static)
     console.log('Withdrawal Successful')
-    setAmount('')
+    
   }
+
 
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center
-      bg-black bg-opacity-50 transform z-[3000] transition-transform duration-300 ${withModal}`}
+      bg-black bg-opacity-50 transform z-[3000] transition-transform duration-300 ${withdrawModal}`}
     >
       <div className="bg-white shadow-lg shadow-slate-900 rounded-xl w-11/12 md:w-2/5 h-7/12 p-6">
         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -32,7 +70,7 @@ const WithdrawModal = ({
             <button
               type="button"
               className="border-0 bg-transparent focus:outline-none"
-              onClick={() => {}}
+              onClick={()=>dispatch(setwithdrawModal('scale-0'))}
             >
               <FaTimes className="text-gray-400" />
             </button>
@@ -54,6 +92,7 @@ const WithdrawModal = ({
               }}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
               min="1"
+              max={campaign.balance.toFixed(2)}
               required
             />
           </div>

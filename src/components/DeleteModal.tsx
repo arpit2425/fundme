@@ -1,16 +1,25 @@
+import { globalAction } from '@/store/globalSlices'
+import { Campaign, RootState } from '@/utils/interfaces'
 import React from 'react'
 import { FaTimes, FaTrashAlt } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
 
-const DeleteModal = () => {
-  const delModal = 'scale-0'
+const DeleteModal = ({campaign,pda}:{campaign:Campaign,pda:string}) => {
+  // const delModal = 'scale-0'
+  const {setDelModal}=globalAction
+  const dispatch=useDispatch()
+
+  const {delModal}=useSelector((state:RootState)=>state.globalStates)
   const handleClose = () => {
+    dispatch(setDelModal('scale-0'))
     // Close the modal functionality (static, no Redux)
   }
 
   const handleDelete = async () => {
     // Simulate successful deletion (static, no actual API call)
+
     console.log('Campaign deleted')
-    handleClose()
+    // handleClose()
   }
 
   return (
@@ -35,7 +44,7 @@ const DeleteModal = () => {
         <div className="mb-6 text-center">
           <p className="text-lg text-gray-600">
             You are about to permanently delete the campaign{' '}
-            <strong>Sample Campaign</strong>.
+            <strong>{campaign.title}</strong>.
           </p>
           <p className="text-sm text-gray-500">This action cannot be undone.</p>
         </div>

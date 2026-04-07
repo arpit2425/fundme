@@ -189,7 +189,45 @@ export const donateToCampaign=async(program:Program<Fundus>,publicKey:PublicKey,
     await connection.confirmTransaction(tx,"finalized");
     return tx;
 }
+export const withdrawFromCampaign=async(program:Program<Fundus>,publicKey:PublicKey, pda:string,
+    amount:string,
+):Promise<TransactionSignature>=>{
+    console.log("program",program)
+    const [programStatePda] = await PublicKey.findProgramAddress(
+        [Buffer.from('program_state')],
+        program.programId
+)
+      const state = await program.account.programState.fetch(programStatePda)
+    console.log(`state ${JSON.stringify(state)}`)
+    const campaign=await program.account.campaign.fetch(pda);
+    const [contributionPda] = await PublicKey.findProgramAddress(
+        [
+          Buffer.from('withdraws'),
+          publicKey.toBuffer(), 
+          campaign.cid.toArrayLike(Buffer, 'le', 8),
+          campaign.withdrawals.add(new BN(1)).toArrayLike(Buffer, 'le', 8),
+        ],
+        program.programId
+      )
+    const amountBn = new BN(Math.round(+amount * LAMPORTS_PER_SOL));
 
+    const tx = await program.methods
+      .withdraw(campaign.cid, amountBn)
+      .accountsPartial({
+        transaction:contributionPda,
+        campaign:pda,
+        donar:publicKey,
+        platformAddress:state.platformAddress,
+        programState:programStatePda,
+        systemProgram:SystemProgram.programId
+    }).rpc();
+    const connection=new Connection(
+        program.provider.connection.rpcEndpoint,
+        "confirmed"
+    );
+    await connection.confirmTransaction(tx,"finalized");
+    return tx;
+}
 export const fetchAllDonations=async(program:Program<Fundus>, pda:string)=>{
         const campaign=await program.account.campaign.fetch(pda);
         const transactions=await program.account.transaction.all();
@@ -211,7 +249,50 @@ export const fetchAllWithdrawals=async(program:Program<Fundus>,pda:string)=>{
     store.dispatch(setWithdrawals(serialDona));
     return serialDona;
 }
+export const updateCampaign=async(program:Program<Fundus>,publicKey:PublicKey,pda:string, title:string,
+    description:string,
+    image_url:string,
+    goal:string,
+):Promise<TransactionSignature>=>{
+    console.log("program",program)
+    const [programStatePda] = await PublicKey.findProgramAddress(
+        [Buffer.from('program_state')],
+        program.programId
+      )
+      const state = await program.account.programState.fetch(programStatePda)
+    console.log(`state ${JSON.stringify(state)}`)
+   const campaign=await program.account.campaign.fetch(pda);
 
+   
+    const goalBN=new BN(+goal*LAMPORTS_PER_SOL);
+    const tx=await program.methods.updateCampaign(campaign.cid,title,description,image_url,goalBN).accountsPartial({
+        campaign:pda,
+        creater:publicKey,
+        systemProgram:SystemProgram.programId
+    }).rpc();
+    const connection=new Connection(
+        program.provider.connection.rpcEndpoint,
+        "confirmed"
+    );
+    await connection.confirmTransaction(tx,"finalized");
+    return tx;
+}
+
+export const deleteCampaign=async(program:Program<Fundus>,publicKey:PublicKey,pda:string
+):Promise<TransactionSignature>=>{
+   const campaign=await program.account.campaign.fetch(pda);
+    const tx=await program.methods.deleteCampaign(campaign.cid).accountsPartial({
+        campaign:pda,
+        creater:publicKey,
+        systemProgram:SystemProgram.programId
+    }).rpc();
+    const connection=new Connection(
+        program.provider.connection.rpcEndpoint,
+        "confirmed"
+    );
+    await connection.confirmTransaction(tx,"finalized");
+    return tx;
+}
 export const fetchProgramState=async(program:Program<Fundus>)=>{
     const [programStatePda] = await PublicKey.findProgramAddress(
         [Buffer.from('program_state')],

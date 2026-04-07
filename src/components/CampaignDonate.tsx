@@ -5,14 +5,17 @@ import { Campaign } from '@/utils/interfaces'
 import { toast } from 'react-toastify'
 import { donateToCampaign, fetchAllDonations, fetchCampaignDetails, getProvider } from '@/services/blockchain'
 import { useWallet } from '@solana/wallet-adapter-react'
+import { useDispatch } from 'react-redux'
+import { globalAction } from '@/store/globalSlices'
 
 const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
   campaign,
   pda,
 }) => {
   const [amount, setAmount] = useState('')
+  const {setwithdrawModal, setDelModal}=globalAction
+  const dispatch=useDispatch()
   const {sendTransaction,publicKey,signTransaction}=useWallet();
-  console.log("wallet", {sendTransaction,publicKey,signTransaction})
   const program=useMemo(()=>{
    return  getProvider(sendTransaction,publicKey,signTransaction)
   },[sendTransaction,publicKey,signTransaction])
@@ -117,6 +120,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
               type="button"
               className="bg-green-600 hover:bg-green-700 text-white
               font-semibold py-2 px-4 flex-1 flex items-center justify-center"
+              onClick={()=>dispatch(setDelModal('scale-100'))}
             >
               <FaTrashAlt />
               Delete
@@ -126,6 +130,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
               className="bg-transparent hover:bg-green-600 text-green-600 hover:text-white
               font-semibold py-2 px-4 flex-1 md:rounded-r-lg flex items-center justify-center
               border border-green-600 hover:border-transparent"
+              onClick={()=>dispatch(setwithdrawModal('scale-100'))}
             >
               <FaDollarSign />
               Payout

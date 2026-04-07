@@ -1,15 +1,36 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { campaigns } from '@/data'
 import Link from 'next/link'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/utils/interfaces'
+import { fetchCampaignDetails, getProvider, updateCampaign } from '@/services/blockchain'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { toast } from 'react-toastify'
 
 export default function Page() {
   const { cid } = useParams()
 
   // Static data: Find the campaign using `cid`
-  const campaign = campaigns.find((c) => c.publicKey === (cid as string))
+  const {sendTransaction,signTransaction,publicKey}=useWallet();
+  const program=useMemo(()=>getProvider(sendTransaction,publicKey,signTransaction),[sendTransaction,publicKey,signTransaction])
+ 
+  const {campaign}=useSelector((state:RootState)=>state.globalStates)
+  useEffect(()=> {
+    if(cid){
+      const fetchedDetail=async()=>{
+      const campaign= await fetchCampaignDetails(program!,cid as string)
+      form.title=campaign.title;
+      form.description=campaign.description;
+      form.image_url=campaign.imageUrl;
+      form.goal=campaign.goal;
+      }
+      fetchedDetail()
+    }
+  } ,[program,cid])
+
 
   // Local form state
   const [form, setForm] = useState({
@@ -22,7 +43,35 @@ export default function Page() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('Form Submitted:', form)
-    alert('Campaign updated successfully!')
+    if(!publicKey){
+      return toast.warn("Connect wallet first")
+    }
+    toast.promise(
+      new Promise( async (resolve,reject)=>{
+        try {
+          console.log(form)
+          const {title,description,image_url,goal }=form;
+          const tx=await  updateCampaign(program!,publicKey!,cid as string,title,description,image_url,goal as string);
+          setForm({
+            title: '',
+            description: '',
+            image_url: '',
+            goal: '',
+          })
+          console.log("transction",tx);
+          resolve(tx);
+        } catch (error) {
+          console.log("errorr",error)
+
+          reject()
+        }
+      }),
+      {
+        success:"Campaign Updated",
+        pending:"Updating Campaign",
+        error:"Failed To Update Campaign"
+      }
+    )
   }
 
   // Fallback if campaign not found
