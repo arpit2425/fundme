@@ -50,7 +50,7 @@ export default function CampaignPage() {
         {/* Hero Section */}
         <div className="relative">
           <Image
-            src={campaign.imageUrl}
+            src={campaign.imgUrl}
             alt={campaign.title}
             width={1920} // Adjust this to match your image dimensions
             height={1080} // Adjust this to match your image dimensions

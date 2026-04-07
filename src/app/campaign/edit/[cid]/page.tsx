@@ -24,7 +24,7 @@ export default function Page() {
       const campaign= await fetchCampaignDetails(program!,cid as string)
       form.title=campaign.title;
       form.description=campaign.description;
-      form.image_url=campaign.imageUrl;
+      form.image_url=campaign.imgUrl;
       form.goal=campaign.goal;
       }
       fetchedDetail()
@@ -36,7 +36,7 @@ export default function Page() {
   const [form, setForm] = useState({
     title: campaign?.title || '',
     description: campaign?.description || '',
-    image_url: campaign?.imageUrl || '',
+    image_url: campaign?.imgUrl || '',
     goal: campaign?.goal || '',
   })
 

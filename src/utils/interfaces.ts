@@ -4,7 +4,7 @@ export interface Campaign {
   creator: string
   title: string
   description: string
-  imageUrl: string
+  imgUrl: string
   goal: number
   amountRaised: number
   timestamp: number

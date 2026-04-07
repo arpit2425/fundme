@@ -143,7 +143,7 @@ export const fetchCampaignDetails=async(program:Program<Fundus>,pda:string):Prom
     balance: campaign.balance.toNumber()/LAMPORTS_PER_SOL,
     title: campaign.title,
     description:campaign.description,
-    imageUrl:campaign.imgUrl,
+    imgUrl:campaign.imgUrl,
 
 }
 store.dispatch(setCampaign(serializedCamp));
