@@ -1,17 +1,23 @@
-import { deleteCampaign } from '@/services/blockchain'
+import { deleteCampaign, getProvider } from '@/services/blockchain'
 import { globalAction } from '@/store/globalSlices'
 import { Campaign, RootState } from '@/utils/interfaces'
 import { program } from '@coral-xyz/anchor/dist/cjs/native/system'
-import React from 'react'
+import { useWallet } from '@solana/wallet-adapter-react'
+import React, { useMemo } from 'react'
 import { FaTimes, FaTrashAlt } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 const DeleteModal = ({campaign,pda}:{campaign:Campaign,pda:string}) => {
-  // const delModal = 'scale-0'
   const {setDelModal}=globalAction
   const dispatch=useDispatch()
 
   const {delModal}=useSelector((state:RootState)=>state.globalStates)
+  const {sendTransaction,publicKey,signTransaction}=useWallet();
+  const program=useMemo(()=>{
+   return  getProvider(sendTransaction,publicKey,signTransaction)
+  },[sendTransaction,publicKey,signTransaction])
+
   const handleClose = () => {
     dispatch(setDelModal('scale-0'))
     // Close the modal functionality (static, no Redux)
@@ -19,6 +25,28 @@ const DeleteModal = ({campaign,pda}:{campaign:Campaign,pda:string}) => {
 
   const handleDelete = async () => {
     // Simulate successful deletion (static, no actual API call)
+
+    toast.promise(
+      new Promise( async (resolve,reject)=>{
+        try {
+        
+          const tx=await  await deleteCampaign(program!,publicKey!,pda)
+        
+          console.log("transction",tx);
+          dispatch(setDelModal('scale-0'))
+          resolve(tx);
+        } catch (error) {
+          console.log("errorr",error)
+          reject()
+        }
+      }),
+      {
+        success:"Campaign Deleted",
+        pending:"Deleting Campaign",
+        error:"Failed"
+      }
+    )
+  
 
     console.log('Campaign deleted')
     // handleClose()

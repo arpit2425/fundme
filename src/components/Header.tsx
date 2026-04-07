@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { FaUserCircle, FaPlusCircle, FaBars, FaTimes } from 'react-icons/fa'
 import {WalletMultiButton} from "@solana/wallet-adapter-react-ui"
+import { useWallet } from '@solana/wallet-adapter-react'
+import { getProvider } from '@/services/blockchain'
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const {sendTransaction,publicKey,signTransaction}=useWallet();
+  const program=useMemo(()=>{
+   return  getProvider(sendTransaction,publicKey,signTransaction)
+  },[sendTransaction,publicKey,signTransaction])
 
   useEffect(() => {
     setIsMounted(true)
@@ -19,8 +25,8 @@ export default function Header() {
         </Link>
 
         {/* Static Navigation */}
-        <nav className="hidden md:flex space-x-6 items-center">
-          <Link
+        {program && publicKey &&(<nav className="hidden md:flex space-x-6 items-center">
+         <Link
             href="/account"
             className="group text-slate-400 hover:text-white flex items-center space-x-1 transition duration-300"
           >
@@ -34,7 +40,7 @@ export default function Header() {
             <FaPlusCircle className="text-slate-500 group-hover:text-violet-400 transition-colors duration-300" />
             <span>Create</span>
           </Link>
-        </nav>
+        </nav>)}
 
         {isMounted && (
           <div className="hidden md:inline-block">

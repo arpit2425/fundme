@@ -116,7 +116,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
               <FaEdit />
               Edit
             </Link>
-            <button
+           { campaign.active && <button
               type="button"
               className="bg-red-500/80 hover:bg-red-500 text-white
               font-semibold py-2.5 px-4 flex-1 flex items-center justify-center transition-all duration-300"
@@ -125,6 +125,7 @@ const CampaignDonate: React.FC<{ campaign: Campaign; pda: string }> = ({
               <FaTrashAlt />
               Delete
             </button>
+}
 
             <button
               className="bg-transparent hover:bg-violet-500 text-violet-400 hover:text-white
