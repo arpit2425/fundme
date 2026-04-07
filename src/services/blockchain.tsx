@@ -28,7 +28,6 @@ let clusterUrl=getClusterUrl(cluster);
 
 export const getProvider=(sendTransaction:any,publicKey:any,signTransaction:any):Program<Fundus> | null =>{
     if(!publicKey || !signTransaction){
-        toast.warn("key missing")
         console.log("keys missing")
         return null;
     }
@@ -144,7 +143,7 @@ export const fetchCampaignDetails=async(program:Program<Fundus>,pda:string):Prom
     balance: campaign.balance.toNumber()/LAMPORTS_PER_SOL,
     title: campaign.title,
     description:campaign.description,
-    imageUrl:campaign.imgUrl,
+    imgUrl:campaign.imgUrl,
 
 }
 store.dispatch(setCampaign(serializedCamp));
@@ -284,6 +283,26 @@ export const deleteCampaign=async(program:Program<Fundus>,publicKey:PublicKey,pd
     const tx=await program.methods.deleteCampaign(campaign.cid).accountsPartial({
         campaign:pda,
         creater:publicKey,
+        systemProgram:SystemProgram.programId
+    }).rpc();
+    const connection=new Connection(
+        program.provider.connection.rpcEndpoint,
+        "confirmed"
+    );
+    await connection.confirmTransaction(tx,"finalized");
+    return tx;
+}
+
+export const updatePlatformFee=async(program:Program<Fundus>,publicKey:PublicKey,fee:string
+):Promise<TransactionSignature>=>{
+    const [programStatePda] = await PublicKey.findProgramAddress(
+        [Buffer.from('program_state')],
+        program.programId
+      )
+   const feeBn=new BN(fee);
+    const tx=await program.methods.updatePlatformSettings(feeBn).accountsPartial({
+        programState:programStatePda,
+        updater:publicKey,
         systemProgram:SystemProgram.programId
     }).rpc();
     const connection=new Connection(

@@ -9,48 +9,51 @@ const CampaignCard: React.FC<{ campaign: Campaign }> = ({ campaign }) => {
     (campaign.amountRaised / campaign.goal) * 100,
     100
   )
+  console.log("campaign card",campaign)
 
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-      <Image
-        src={campaign.imageUrl}
-        alt={`${campaign.title} campaign`}
-        width={300}
-        height={150}
-        className="w-full h-48 object-cover"
-      />
+    <div className="max-w-sm bg-white/[0.03] border border-white/[0.06] rounded-2xl overflow-hidden hover:bg-white/[0.06] hover:border-white/[0.12] transition-all duration-300 group">
+      <div className="overflow-hidden">
+        <Image
+          src={campaign.imgUrl}
+          alt={`${campaign.title} campaign`}
+          width={300}
+          height={150}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+      </div>
 
       <div className="p-6">
-        <h2 className="text-xl font-bold text-gray-800 truncate">
+        <h2 className="text-xl font-bold text-slate-100 truncate">
           {campaign.title}
         </h2>
-        <p className="text-gray-600 text-sm mt-2 truncate">
+        <p className="text-slate-400 text-sm mt-2 truncate">
           {campaign.description.length > 100
             ? `${campaign.description.substring(0, 100)}...`
             : campaign.description}
         </p>
         <div className="mt-4">
-          <div className="h-2 bg-gray-200 rounded-full">
+          <div className="h-2 bg-white/10 rounded-full overflow-hidden">
             <div
-              className="h-2 bg-green-500 rounded-full"
+              className="h-2 gradient-bar rounded-full transition-all duration-700"
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
           <div className="flex justify-between items-center mt-2 text-sm">
-            <span className="text-gray-700 flex items-center space-x-1">
-              <FaCoins className="text-green-500" />
+            <span className="text-slate-300 flex items-center space-x-1">
+              <FaCoins className="text-violet-400" />
               <strong>{campaign.amountRaised}</strong> SOL Raised
             </span>
-            <span className="text-gray-700 flex items-center space-x-1">
-              <FaUsers className="text-black" />
+            <span className="text-slate-300 flex items-center space-x-1">
+              <FaUsers className="text-cyan-400" />
               <strong>{campaign.donors}</strong> Donors
             </span>
           </div>
         </div>
         <Link
           href={`/campaign/${campaign.publicKey}`}
-          className="mt-4 w-full bg-green-600 hover:bg-green-700
-          text-white text-sm font-semibold py-2 px-4 rounded-lg block text-center"
+          className="mt-4 w-full bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-400 hover:to-cyan-400
+          text-white text-sm font-semibold py-2.5 px-4 rounded-xl block text-center transition-all duration-300"
         >
           View Campaign
         </Link>

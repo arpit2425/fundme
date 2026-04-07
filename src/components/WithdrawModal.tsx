@@ -27,7 +27,7 @@ const WithdrawModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!amount || !publicKey || !program) return
-   
+
     toast.promise(
       new Promise( async (resolve,reject)=>{
         try {
@@ -52,19 +52,19 @@ const WithdrawModal = ({
     )
     // Simulate a withdrawal (static)
     console.log('Withdrawal Successful')
-    
+
   }
 
 
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen flex items-center justify-center
-      bg-black bg-opacity-50 transform z-[3000] transition-transform duration-300 ${withdrawModal}`}
+      bg-black/60 backdrop-blur-sm transform z-[3000] transition-transform duration-300 ${withdrawModal}`}
     >
-      <div className="bg-white shadow-lg shadow-slate-900 rounded-xl w-11/12 md:w-2/5 h-7/12 p-6">
+      <div className="glass bg-[#12122a] shadow-2xl shadow-black/50 rounded-2xl w-11/12 md:w-2/5 p-8 border border-white/[0.08]">
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="flex flex-row justify-between items-center">
-            <p className="block text-sm font-semibold text-gray-700">
+            <p className="block text-sm font-semibold text-slate-200">
               Creator Withdrawal
             </p>
             <button
@@ -72,7 +72,7 @@ const WithdrawModal = ({
               className="border-0 bg-transparent focus:outline-none"
               onClick={()=>dispatch(setwithdrawModal('scale-0'))}
             >
-              <FaTimes className="text-gray-400" />
+              <FaTimes className="text-slate-500 hover:text-slate-300 transition-colors duration-200" />
             </button>
           </div>
 
@@ -90,7 +90,7 @@ const WithdrawModal = ({
                   setAmount(value)
                 }
               }}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-colors duration-200"
               min="1"
               max={campaign.balance.toFixed(2)}
               required
@@ -101,9 +101,9 @@ const WithdrawModal = ({
             <button
               type="submit"
               disabled={!amount}
-              className={`w-full bg-green-600 hover:bg-green-700 ${
+              className={`w-full bg-gradient-to-r from-violet-500 to-cyan-500 hover:from-violet-400 hover:to-cyan-400 ${
                 !amount ? 'opacity-50 cursor-not-allowed' : ''
-              } text-white font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2`}
+              } text-white font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300`}
             >
               Withdraw
             </button>

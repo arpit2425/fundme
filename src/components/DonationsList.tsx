@@ -11,18 +11,18 @@ const DonationsList: React.FC<{ donations: Transaction[] }> = ({
 
   return (
     <div className="mt-8">
-      <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-        <FaMoneyBillWave className="text-green-600" />
+      <h2 className="text-lg font-bold text-slate-100 mb-4 flex items-center gap-2">
+        <FaMoneyBillWave className="text-emerald-400" />
         Donation History
       </h2>
       {donations.length > 0 ? (
-        <ul className="bg-white rounded-lg shadow-lg divide-y divide-gray-200">
+        <ul className="glass rounded-2xl divide-y divide-white/[0.06]">
           {donations.map((donation, index) => (
             <li
               key={index}
-              className="px-4 py-2 flex justify-between items-center"
+              className="px-5 py-3 flex justify-between items-center hover:bg-white/[0.03] transition-colors duration-200"
             >
-              <p className="text-gray-800 flex justify-start items-center space-x-1">
+              <p className="text-slate-200 flex justify-start items-center space-x-1">
                 <strong>
                   <Link
                     href={`https://explorer.solana.com/address/${donation.owner}?cluster=${CLUSTER_NAME}`}
@@ -31,19 +31,19 @@ const DonationsList: React.FC<{ donations: Transaction[] }> = ({
                     {truncateAddress(donation.owner)}
                   </Link>
                 </strong>{' '}
-                <small className="text-green-500">
+                <small className="text-emerald-400">
                   {donation.amount} SOL
                 </small>
               </p>
 
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-slate-500">
                 {new Date(donation.timestamp).toLocaleDateString()}
               </p>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-gray-600">No donations yet.</p>
+        <p className="text-slate-500">No donations yet.</p>
       )}
     </div>
   )

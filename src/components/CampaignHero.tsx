@@ -4,27 +4,27 @@ import React from 'react'
 
 const CampaignHero = () => {
   return (
-    <section className="bg-gradient-to-r from-green-400 to-blue-500 text-white py-20 px-6 md:px-12">
+    <section className="relative overflow-hidden bg-gradient-to-br from-violet-600/20 via-[#0a0a1a] to-cyan-600/20 text-white py-24 px-6 md:px-16 rounded-2xl">
       <div className="container mx-auto text-center md:text-left">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
               Empower Dreams Through Crowdfunding
             </h1>
-            <p className="mt-4 text-lg md:text-xl text-white/90">
+            <p className="mt-6 text-lg md:text-xl text-slate-300 leading-relaxed max-w-lg">
               Discover, support, and fund campaigns that matter. Join a
               community of dreamers and changemakers, and bring ideas to life.
             </p>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/account"
-                className="bg-white text-green-600 hover:bg-green-100 font-semibold py-3 px-6 rounded-lg shadow-md transition-all"
+                className="bg-gradient-to-r from-violet-500 to-cyan-500 text-white hover:from-violet-400 hover:to-cyan-400 font-semibold py-3 px-6 rounded-xl shadow-lg shadow-violet-500/25 transition-all duration-300"
               >
                 Explore Campaigns
               </Link>
               <Link
                 href="/create"
-                className="ml-4 text-white bg-green-600 hover:bg-green-700 font-semibold py-3 px-6 rounded-lg shadow-md transition-all"
+                className="bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 font-semibold py-3 px-6 rounded-xl transition-all duration-300"
               >
                 Start a Campaign
               </Link>
@@ -36,7 +36,7 @@ const CampaignHero = () => {
               alt="Crowdfunding Illustration"
               width={576}
               height={384}
-              className="w-full rounded-lg shadow-lg h-96 object-cover"
+              className="w-full rounded-2xl shadow-2xl shadow-violet-500/10 h-96 object-cover ring-1 ring-white/10"
             />
           </div>
         </div>
